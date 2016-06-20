@@ -19,6 +19,13 @@
 
 @implementation ImagesTableViewController
 
+
+- (NSMutableArray *) items {
+    NSMutableArray *items = [[DataSource sharedInstance].mediaItems mutableCopy];
+    
+    return items;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
@@ -45,7 +52,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return [DataSource sharedInstance].mediaItems.count;
+    return self.items.count;
 }
 
 
@@ -72,7 +79,7 @@
         
     }
     
-    Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
+    Media *item = self.items[indexPath.row];
     imageView.image = item.image;
     
     
@@ -81,7 +88,7 @@
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    Media *item =[DataSource sharedInstance].mediaItems[indexPath.row];
+    Media *item =self.items[indexPath.row];
     UIImage *image = item.image;
     
     return image.size.height / image.size.width * CGRectGetWidth(self.view.frame);
@@ -90,28 +97,28 @@
 }
 
  //Override to support conditional editing of the table view.
-//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-//    // Return NO if you do not want the specified item to be editable.
-//    
-//    
-//    
-//    return YES;
-//}
-//
-//
-//
-//// Override to support editing the table view.
-//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (editingStyle == UITableViewCellEditingStyleDelete) {
-//        // Delete the row from the data source
-//        
-//        
-//        [[DataSource shardedInstance].mediaItems removeObjectAtIndex:indexPath.row];
-//        [tableView reloadData];
-//        
-//    }   
-//}
-//
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be editable.
+    
+    
+    
+    return YES;
+}
+
+
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        
+        
+        [self.items removeObjectAtIndex:indexPath.row];
+        [tableView reloadData];
+        
+    }   
+}
+
 
 /*
 // Override to support rearranging the table view.
