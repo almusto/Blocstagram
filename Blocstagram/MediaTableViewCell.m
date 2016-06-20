@@ -26,6 +26,7 @@ static UIColor *usernameLabelGray;
 static UIColor *commentLabelGray;
 static UIColor *linkColor;
 static NSParagraphStyle *paragraphStyle;
+static UIColor *firstCommentColor;
 
 
 
@@ -53,12 +54,14 @@ static NSParagraphStyle *paragraphStyle;
     usernameLabelGray = [UIColor colorWithRed:0.933 green:0.933 blue:0.933 alpha:1];
     commentLabelGray = [UIColor colorWithRed:0.898 green:0.898 blue:0.898 alpha:1];
     linkColor = [UIColor colorWithRed:0.345 green:0.314 blue:0.427 alpha:1];
+    firstCommentColor = [UIColor orangeColor];
     
     NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     mutableParagraphStyle.headIndent = 20.0;
     mutableParagraphStyle.firstLineHeadIndent = 20.0;
     mutableParagraphStyle.tailIndent = -20.0;
     mutableParagraphStyle.paragraphSpacingBefore = 5;
+    
     
     paragraphStyle = mutableParagraphStyle;
     
@@ -68,9 +71,10 @@ static NSParagraphStyle *paragraphStyle;
 - (NSAttributedString *) usernameAndCaptionString {
     
     CGFloat usernameFontSize = 15;
+    
     NSString *baseString = [NSString stringWithFormat:@"%@ %@", self.mediaItem.user.userName, self.mediaItem.caption];
     
-    NSMutableAttributedString *mutableUsernameAndCaptionString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize], NSParagraphStyleAttributeName : paragraphStyle}];
+    NSMutableAttributedString *mutableUsernameAndCaptionString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize], NSParagraphStyleAttributeName : paragraphStyle, NSKernAttributeName:@1.2}];
     
     NSRange usernameRange = [baseString rangeOfString:self.mediaItem.user.userName];
     [mutableUsernameAndCaptionString addAttribute:NSFontAttributeName value:[boldFont fontWithSize:usernameFontSize] range:usernameRange];
@@ -109,16 +113,39 @@ static NSParagraphStyle *paragraphStyle;
     
     for (Comment *comment in self.mediaItem.comments) {
         NSString *baseString = [NSString stringWithFormat:@"%@ %@\n", comment.from.userName, comment.text];
+    
+        NSMutableParagraphStyle *para = [paragraphStyle mutableCopy];
+        NSMutableAttributedString *oneCommentString;
         
+        if (([self.mediaItem.comments indexOfObject:comment]+1) % 2 == 0) {
+            
+            para.alignment = NSTextAlignmentRight;
+            
+            oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : para}];
+        } else {
         
-        NSMutableAttributedString *oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
+        oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
+        }
+        
         
         NSRange usernameRange = [baseString rangeOfString:comment.from.userName];
+        NSRange commentRange = [baseString rangeOfString:comment.text];
         [oneCommentString addAttribute:NSFontAttributeName value:boldFont range:usernameRange];
-        [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+        
+        
+        if (comment == [self.mediaItem.comments objectAtIndex:0]){
+            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+            [oneCommentString addAttribute:NSForegroundColorAttributeName value:firstCommentColor range:commentRange];
+            
+        } else {
+            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+        }
+        
         
         [commentString appendAttributedString:oneCommentString];
     }
+    
+//    NSLog(@"%@", commentString);
     
     return commentString;
 }
