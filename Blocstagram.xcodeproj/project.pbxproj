@@ -28,6 +28,7 @@
 		AA678DDE1D1826C600573788 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DDD1D1826C600573788 /* Media.m */; };
 		AA678DE11D1827D600573788 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DE01D1827D600573788 /* Comment.m */; };
 		AA678DE41D1828AD00573788 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DE31D1828AD00573788 /* DataSource.m */; };
+		AA678DE71D18458000573788 /* MediaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DE61D18458000573788 /* MediaTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		AA678DE01D1827D600573788 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
 		AA678DE21D1828AD00573788 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
 		AA678DE31D1828AD00573788 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
+		AA678DE51D18458000573788 /* MediaTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaTableViewCell.h; sourceTree = "<group>"; };
+		AA678DE61D18458000573788 /* MediaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +139,8 @@
 				AA678D921D11C3EE00573788 /* AppDelegate.m */,
 				AA678DD61D11C7F700573788 /* ImagesTableViewController.h */,
 				AA678DD71D11C7F700573788 /* ImagesTableViewController.m */,
+				AA678DE51D18458000573788 /* MediaTableViewCell.h */,
+				AA678DE61D18458000573788 /* MediaTableViewCell.m */,
 				AA678DDC1D1826C600573788 /* Media.h */,
 				AA678DDD1D1826C600573788 /* Media.m */,
 				AA678DDF1D1827D600573788 /* Comment.h */,
@@ -336,6 +341,7 @@
 			files = (
 				AA678DDB1D18258F00573788 /* User.m in Sources */,
 				AA678DE11D1827D600573788 /* Comment.m in Sources */,
+				AA678DE71D18458000573788 /* MediaTableViewCell.m in Sources */,
 				AA678DDE1D1826C600573788 /* Media.m in Sources */,
 				AA678D931D11C3EE00573788 /* AppDelegate.m in Sources */,
 				AA678DE41D1828AD00573788 /* DataSource.m in Sources */,
