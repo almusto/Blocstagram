@@ -17,6 +17,9 @@
 @property (nonatomic, strong) UIImageView *mediaImageView;
 @property (nonatomic, strong) UILabel *usernameAndCaptionLabel;
 @property (nonatomic, strong) UILabel *commentLabel;
+@property (nonatomic, strong) NSLayoutConstraint *imageHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *commentLabelHeightConstraint;
 
 @end
 
@@ -37,11 +40,11 @@ static UIColor *firstCommentColor;
 
     MediaTableViewCell *layoutCell = [[MediaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"layoutCell"];
     
-    layoutCell.frame = CGRectMake(0, 0, width, CGFLOAT_MAX);
-    
     layoutCell.mediaItem = mediaItem;
+    layoutCell.frame = CGRectMake(0, 0, width, CGRectGetHeight(layoutCell.frame));
     
-    [layoutCell layoutSubviews];
+    [layoutCell setNeedsLayout];
+    [layoutCell layoutIfNeeded];
     
     return CGRectGetMaxY(layoutCell.commentLabel.frame);
 }
@@ -54,7 +57,7 @@ static UIColor *firstCommentColor;
     usernameLabelGray = [UIColor colorWithRed:0.933 green:0.933 blue:0.933 alpha:1];
     commentLabelGray = [UIColor colorWithRed:0.898 green:0.898 blue:0.898 alpha:1];
     linkColor = [UIColor colorWithRed:0.345 green:0.314 blue:0.427 alpha:1];
-    firstCommentColor = [UIColor orangeColor];
+//    firstCommentColor = [UIColor orangeColor];
     
     NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     mutableParagraphStyle.headIndent = 20.0;
@@ -100,10 +103,50 @@ static UIColor *firstCommentColor;
         self.commentLabel.backgroundColor = commentLabelGray;
         
         
-        for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel])
+        for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel]){
             [self.contentView addSubview:view];
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+        }
+        
+        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel);
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]"
+                                                                                 options:kNilOptions
+                                                                                 metrics:nil
+                                                                                   views:viewDictionary]];
+        self.imageHeightConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
+                                                                  attribute:NSLayoutAttributeHeight
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:nil
+                                                                  attribute:NSLayoutAttributeNotAnAttribute
+                                                                 multiplier:1
+                                                                   constant:100];
+        self.imageHeightConstraint.identifier = @"Image height constraint";
+        
+        self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
+                                                                                    attribute:NSLayoutAttributeHeight
+                                                                                    relatedBy:NSLayoutRelationEqual
+                                                                                       toItem:nil
+                                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                                   multiplier:1
+                                                                                     constant:100];
+        self.usernameAndCaptionLabelHeightConstraint.identifier = @"Username and caption label height constraint";
+        
+        self.commentLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
+                                                                         attribute:NSLayoutAttributeHeight
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1
+                                                                          constant:100];
+        self.commentLabelHeightConstraint.identifier = @"Comment label height constraint";
+        
+        [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint]];
     }
-    
     return self;
     
 }
@@ -114,34 +157,34 @@ static UIColor *firstCommentColor;
     for (Comment *comment in self.mediaItem.comments) {
         NSString *baseString = [NSString stringWithFormat:@"%@ %@\n", comment.from.userName, comment.text];
     
-        NSMutableParagraphStyle *para = [paragraphStyle mutableCopy];
+//        NSMutableParagraphStyle *para = [paragraphStyle mutableCopy];
         NSMutableAttributedString *oneCommentString;
         
-        if (([self.mediaItem.comments indexOfObject:comment]+1) % 2 == 0) {
-            
-            para.alignment = NSTextAlignmentRight;
-            
-            oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : para}];
-        } else {
-        
+//        if (([self.mediaItem.comments indexOfObject:comment]+1) % 2 == 0) {
+//            
+//            para.alignment = NSTextAlignmentRight;
+//            
+//            oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : para}];
+//        } else {
+//        
+//            oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
+//        }
         oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
-        }
-        
         
         NSRange usernameRange = [baseString rangeOfString:comment.from.userName];
-        NSRange commentRange = [baseString rangeOfString:comment.text];
+//        NSRange commentRange = [baseString rangeOfString:comment.text];
         [oneCommentString addAttribute:NSFontAttributeName value:boldFont range:usernameRange];
         
-        
-        if (comment == [self.mediaItem.comments objectAtIndex:0]){
-            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
-            [oneCommentString addAttribute:NSForegroundColorAttributeName value:firstCommentColor range:commentRange];
-            
-        } else {
-            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
-        }
-        
-        
+//        
+//        if (comment == [self.mediaItem.comments objectAtIndex:0]){
+//            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+//            [oneCommentString addAttribute:NSForegroundColorAttributeName value:firstCommentColor range:commentRange];
+//            
+//        } else {
+//            [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+//        }
+//        
+        [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
         [commentString appendAttributedString:oneCommentString];
     }
     
@@ -155,13 +198,6 @@ static UIColor *firstCommentColor;
 
 }
 
-- (CGSize) sizeOfString:(NSAttributedString *)string {
-    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.contentView.bounds) - 40, 0.0);
-    CGRect sizeRect = [string boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    sizeRect.size.height += 20;
-    sizeRect = CGRectIntegral(sizeRect);
-    return sizeRect.size;
-}
 
 - (void) layoutSubviews {
     [super layoutSubviews];
@@ -170,14 +206,14 @@ static UIColor *firstCommentColor;
         return;
     }
     
-    CGFloat imageHeight = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
-    self.mediaImageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.contentView.bounds), imageHeight);
+    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
+    CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
+    CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
     
-    CGSize sizeOfUsernameAndCaptionLabel = [self sizeOfString:self.usernameAndCaptionLabel.attributedText];
-    self.usernameAndCaptionLabel.frame = CGRectMake(0, CGRectGetMaxY(self.mediaImageView.frame), CGRectGetWidth(self.contentView.bounds), sizeOfUsernameAndCaptionLabel.height);
-    
-    CGSize sizeOfCommentLabel = [self sizeOfString:self.commentLabel.attributedText];
-    self.commentLabel.frame = CGRectMake(0, CGRectGetMaxY(self.usernameAndCaptionLabel.frame), CGRectGetWidth(self.bounds), sizeOfCommentLabel.height);
+    self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
+    self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
+    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+   
     
     self.separatorInset = UIEdgeInsetsMake(0, CGRectGetWidth(self.bounds)/2.0, 0, CGRectGetWidth(self.bounds)/2.0);
 }
