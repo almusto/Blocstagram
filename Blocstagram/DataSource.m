@@ -149,4 +149,11 @@
     [mutableArrayWithKVO removeObject:item];
 }
 
+- (void) moveItem:(Media *)item {
+    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+    NSUInteger index = [mutableArrayWithKVO indexOfObject:item];
+    [mutableArrayWithKVO removeObjectAtIndex:index];
+    [mutableArrayWithKVO insertObject:item atIndex:0];
+}
+
 @end
