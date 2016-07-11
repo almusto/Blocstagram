@@ -42,7 +42,13 @@
         [navVC setViewControllers:@[imagesVC] animated:YES];
     }
     
-    
+    if ([DataSource sharedInstance].mediaItems.count > 0) {
+        
+        [[DataSource sharedInstance] requestNewItemsWithCompletionHandler:nil];
+        
+     
+         }
+        
     
     
     self.window.rootViewController = navVC;

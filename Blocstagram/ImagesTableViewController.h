@@ -10,4 +10,6 @@
 
 @interface ImagesTableViewController : UITableViewController
 
+- (void) refreshControlDidFire:(UIRefreshControl *) sender;
+
 @end

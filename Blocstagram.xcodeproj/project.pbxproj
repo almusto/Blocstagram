@@ -31,6 +31,7 @@
 		AA678DE41D1828AD00573788 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DE31D1828AD00573788 /* DataSource.m */; };
 		AA678DE71D18458000573788 /* MediaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DE61D18458000573788 /* MediaTableViewCell.m */; };
 		AA678DED1D1F1C4600573788 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA678DEC1D1F1C4600573788 /* LoginViewController.m */; };
+		AA9D84D81D33E8B100AD6F92 /* MediaFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D84D71D33E8B100AD6F92 /* MediaFullScreenViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,8 @@
 		AA678DE61D18458000573788 /* MediaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTableViewCell.m; sourceTree = "<group>"; };
 		AA678DEB1D1F1C4600573788 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		AA678DEC1D1F1C4600573788 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		AA9D84D61D33E8B100AD6F92 /* MediaFullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaFullScreenViewController.h; sourceTree = "<group>"; };
+		AA9D84D71D33E8B100AD6F92 /* MediaFullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaFullScreenViewController.m; sourceTree = "<group>"; };
 		F847A22DC3233BB7265D5A3D /* Pods-Blocstagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blocstagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Blocstagram/Pods-Blocstagram.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,6 +163,8 @@
 				AA678DD71D11C7F700573788 /* ImagesTableViewController.m */,
 				AA678DE51D18458000573788 /* MediaTableViewCell.h */,
 				AA678DE61D18458000573788 /* MediaTableViewCell.m */,
+				AA9D84D61D33E8B100AD6F92 /* MediaFullScreenViewController.h */,
+				AA9D84D71D33E8B100AD6F92 /* MediaFullScreenViewController.m */,
 				AA678DEB1D1F1C4600573788 /* LoginViewController.h */,
 				AA678DEC1D1F1C4600573788 /* LoginViewController.m */,
 				AA678DDC1D1826C600573788 /* Media.h */,
@@ -419,6 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA9D84D81D33E8B100AD6F92 /* MediaFullScreenViewController.m in Sources */,
 				AA678DDB1D18258F00573788 /* User.m in Sources */,
 				AA678DE11D1827D600573788 /* Comment.m in Sources */,
 				AA678DE71D18458000573788 /* MediaTableViewCell.m in Sources */,
