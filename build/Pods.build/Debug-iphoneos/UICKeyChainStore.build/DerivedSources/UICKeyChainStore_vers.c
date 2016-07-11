@@ -1,0 +1,1 @@
+ const unsigned char UICKeyChainStoreVersionString[] __attribute__ ((used)) = "@(#)PROGRAM:UICKeyChainStore  PROJECT:Pods-1" "\n"; const double UICKeyChainStoreVersionNumber __attribute__ ((used)) = (double)1.;
