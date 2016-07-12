@@ -102,7 +102,7 @@ static UIColor *firstCommentColor;
         self.tapGestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
         
-        self.longPressGuestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector((LongPressFired:))];
+        self.longPressGuestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector((longPressFired:))];
         self.longPressGuestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.longPressGuestureRecognizer];
         
