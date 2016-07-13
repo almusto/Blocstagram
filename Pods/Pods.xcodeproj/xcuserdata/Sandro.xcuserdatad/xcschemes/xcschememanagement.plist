@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>AFNetworking.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-Blocstagram.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +22,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2D06242965A2199F06437DAC9866DC18</key>
+		<key>4878C70B21CA37D7CB8A476BF986741B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9E96EF11CC26BB3495FAEC27B79D4533</key>
+		<key>4D58819FE38AF14E2CBA993AEB4AA127</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>69ACBBE1BFB21286DF262B2868C8B278</key>
 		<dict>
 			<key>primary</key>
 			<true/>

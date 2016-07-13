@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9E96EF11CC26BB3495FAEC27B79D4533"
+               BlueprintIdentifier = "69ACBBE1BFB21286DF262B2868C8B278"
                BuildableName = "Pods_Blocstagram.framework"
                BlueprintName = "Pods-Blocstagram"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9E96EF11CC26BB3495FAEC27B79D4533"
+            BlueprintIdentifier = "69ACBBE1BFB21286DF262B2868C8B278"
             BuildableName = "Pods_Blocstagram.framework"
             BlueprintName = "Pods-Blocstagram"
             ReferencedContainer = "container:Pods.xcodeproj">
