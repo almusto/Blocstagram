@@ -16,6 +16,7 @@
 
 @interface ImagesTableViewController () <MediaTableViewCellDelegate>
 
+
 @end
 
 @implementation ImagesTableViewController
@@ -195,6 +196,12 @@
         [self presentViewController:activityVC animated:YES completion:nil];
     }
 }
+
+- (void) cell:(MediaTableViewCell *)cell didDoubleTouchImageView:(UIImageView *)imageView {
+    [[DataSource sharedInstance] downloadImageForMediaItem:cell.mediaItem];
+}
+
+
 
 /*
  // Override to support rearranging the table view.

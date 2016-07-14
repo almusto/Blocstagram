@@ -18,4 +18,5 @@
 
 - (instancetype) initWithDictionary:(NSDictionary *)commentDictionary;
 
+
 @end

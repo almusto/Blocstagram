@@ -10,6 +10,7 @@
 #import "Media.h"
 #import "Comment.h"
 #import "User.h"
+#import "DataSource.h"
 
 
 @interface MediaTableViewCell () <UIGestureRecognizerDelegate>
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelHeightConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelHeightConstraint;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleTouchGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGuestureRecognizer;
 
 @end
@@ -102,7 +104,7 @@ static UIColor *firstCommentColor;
         self.tapGestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
         
-        self.longPressGuestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector((LongPressFired:))];
+        self.longPressGuestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector((longPressFired:))];
         self.longPressGuestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.longPressGuestureRecognizer];
         
@@ -113,6 +115,11 @@ static UIColor *firstCommentColor;
         self.commentLabel = [[UILabel alloc] init];
         self.commentLabel.numberOfLines = 0;
         self.commentLabel.backgroundColor = commentLabelGray;
+        
+        self.doubleTouchGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector((doubleTapFired:))];
+        self.doubleTouchGestureRecognizer.delegate = self;
+        [self.mediaImageView addGestureRecognizer:self.doubleTouchGestureRecognizer];
+        self.doubleTouchGestureRecognizer.numberOfTouchesRequired = 2;
         
         
         for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel]){
@@ -162,6 +169,8 @@ static UIColor *firstCommentColor;
     return self;
     
 }
+
+
 
 - (NSAttributedString *) commentString {
     NSMutableAttributedString *commentString = [[NSMutableAttributedString alloc] init];
@@ -249,7 +258,9 @@ static UIColor *firstCommentColor;
 #pragma mark - Image View
 
 -(void) tapFired:(UITapGestureRecognizer *)sender {
-    [self.delegate cell:self didTapImageView:self.mediaImageView];
+    if (self.tapGestureRecognizer.numberOfTouches < 2) {
+      [self.delegate cell:self didTapImageView:self.mediaImageView];
+    }
 }
 
 #pragma mark - UIGestureRecoznizerDelegate
@@ -261,6 +272,12 @@ static UIColor *firstCommentColor;
 - (void) longPressFired:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         [self.delegate cell:self didLongPressImageView:self.mediaImageView];
+    }
+}
+
+- (void) doubleTapFired:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+    [self.delegate cell:self didTapImageView:self.mediaImageView];
     }
 }
 
