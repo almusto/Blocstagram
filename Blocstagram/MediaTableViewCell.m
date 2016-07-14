@@ -26,6 +26,8 @@
 
 @property (nonatomic, strong) LikeButton *likeButton;
 
+@property (nonatomic, strong) UILabel *numberOfLikes;
+
 @end
 
 static UIFont *lightFont;
@@ -121,15 +123,19 @@ static UIColor *firstCommentColor;
         [self.likeButton addTarget:self action:@selector(likePressed:) forControlEvents:UIControlEventTouchUpInside];
         self.likeButton.backgroundColor = usernameLabelGray;
         
-        for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton]) {
+        self.numberOfLikes = [[UILabel alloc] init];
+        self.numberOfLikes.numberOfLines = 0;
+        self.numberOfLikes.backgroundColor = usernameLabelGray;
+        
+        for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton, self.numberOfLikes]) {
             [self.contentView addSubview:view];
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
         
-         NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton);
+         NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _numberOfLikes);
         
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeButton(==38)]|"
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_numberOfLikes(==20)][_likeButton(==38)]|"
                                                                                  options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom
                                                                                  metrics:nil
                                                                                    views:viewDictionary]];
@@ -171,6 +177,15 @@ static UIColor *firstCommentColor;
     }
     return self;
     
+}
+
+- (NSAttributedString *) numberOfLikesString {
+    CGFloat numberOfLikesFontSize = 15;
+    NSString *numberOfLikesString = [NSString stringWithFormat:@"%ld",(long)self.mediaItem.likesCount];
+    
+    NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithString:numberOfLikesString attributes:@{NSFontAttributeName : [lightFont fontWithSize: numberOfLikesFontSize], NSParagraphStyleAttributeName : paragraphStyle}];
+    
+    return mutableString;
 }
 
 - (NSAttributedString *) commentString {
@@ -255,6 +270,7 @@ static UIColor *firstCommentColor;
     self.usernameAndCaptionLabel.attributedText = [self usernameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     self.likeButton.likeButtonState = mediaItem.likeState;
+    self.numberOfLikes.attributedText = [self numberOfLikesString];
 }
 
 #pragma mark - Image View

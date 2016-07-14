@@ -54,6 +54,8 @@
         BOOL userHasLiked = [mediaDictionary[@"user_has_liked"] boolValue];
         
         self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
+        
+        self.likesCount = [mediaDictionary[@"likes"][@"count"] integerValue];
     }
     return self;
 }
