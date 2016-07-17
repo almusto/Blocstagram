@@ -18,7 +18,7 @@
 @interface ImagesTableViewController () <MediaTableViewCellDelegate, CameraViewControllerDelegate>
 
 
-
+@property (nonatomic, weak) UIImageView *lastTappedImageView;
 @property (nonatomic, weak) UIView *lastSelectedCommentView;
 @property (nonatomic, assign) CGFloat lastKeyboardAdjustment;
 
