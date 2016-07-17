@@ -42,6 +42,43 @@
     [self createCancelButton];
 }
 
+#pragma mark - Layout
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 44);
+    
+    CGFloat yOriginOfBottomView = CGRectGetMaxY(self.topView.frame) + width;
+    CGFloat heightOfBottomView = CGRectGetHeight(self.view.frame) - yOriginOfBottomView;
+    self.bottomView.frame = CGRectMake(0, yOriginOfBottomView, width, heightOfBottomView);
+    
+    CGFloat thirdOfWidth = width / 3;
+    
+    for (int i = 0; i < 4; i++) {
+        UIView *horizontalLine = self.horizontalLines[i];
+        UIView *verticalLine = self.verticalLines[i];
+        
+        horizontalLine.frame = CGRectMake(0, (i * thirdOfWidth) + CGRectGetMaxY(self.topView.frame), width, 0.5);
+        
+        CGRect verticalFrame = CGRectMake(i * thirdOfWidth, CGRectGetMaxY(self.topView.frame), 0.5, width);
+        
+        if (i == 3) {
+            verticalFrame.origin.x -= 0.5;
+        }
+        
+        verticalLine.frame = verticalFrame;
+    }
+    
+    self.imagePreview.frame = self.view.bounds;
+    self.captureVideoPreviewLayer.frame = self.imagePreview.bounds;
+    
+    CGFloat cameraToolbarHeight = 100;
+    self.cameraToolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds) - cameraToolbarHeight, width, cameraToolbarHeight);
+}
+
+
 - (void) createCancelButton {
     UIImage *cancelImage = [UIImage imageNamed:@"x"];
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:cancelImage style:UIBarButtonItemStyleDone target:self action:@selector(cancelPressed:)];
@@ -96,30 +133,6 @@
     }];
 }
 
-- (void) addViewsToViewHierarchy {
-    NSMutableArray *views = [@[self.imagePreview, self.topView, self.bottomView] mutableCopy];
-    [views addObjectsFromArray:self.horizontalLines];
-    [views addObjectsFromArray:self.verticalLines];
-    [views addObject:self.cameraToolbar];
-    
-    for (UIView *view in views) {
-        [self.view addSubview:view];
-    }
-}
-
-- (void) createViews {
-    self.imagePreview = [UIView new];
-    self.topView = [UIToolbar new];
-    self.bottomView = [UIToolbar new];
-    self.cameraToolbar = [[CameraToolbar alloc] initWithImageNames:@[@"rotate", @"road"]];
-    self.cameraToolbar.delegate = self;
-    UIColor *whiteBG = [UIColor colorWithWhite:1.0 alpha:.15];
-    self.topView.barTintColor = whiteBG;
-    self.bottomView.barTintColor = whiteBG;
-    self.topView.alpha = 0.5;
-    self.bottomView.alpha = 0.5;
-}
-
 - (NSArray *) horizontalLines {
     if (!_horizontalLines) {
         _horizontalLines = [self newArrayOfFourWhiteViews];
@@ -148,47 +161,39 @@
     return array;
 }
 
+
+- (void) addViewsToViewHierarchy {
+    NSMutableArray *views = [@[self.imagePreview, self.topView, self.bottomView] mutableCopy];
+    [views addObjectsFromArray:self.horizontalLines];
+    [views addObjectsFromArray:self.verticalLines];
+    [views addObject:self.cameraToolbar];
+    
+    for (UIView *view in views) {
+        [self.view addSubview:view];
+    }
+}
+
+- (void) createViews {
+    self.imagePreview = [UIView new];
+    self.topView = [UIToolbar new];
+    self.bottomView = [UIToolbar new];
+    self.cameraToolbar = [[CameraToolbar alloc] initWithImageNames:@[@"rotate", @"road"]];
+    self.cameraToolbar.delegate = self;
+    UIColor *whiteBG = [UIColor colorWithWhite:1.0 alpha:.15];
+    self.topView.barTintColor = whiteBG;
+    self.bottomView.barTintColor = whiteBG;
+    self.topView.alpha = 0.5;
+    self.bottomView.alpha = 0.5;
+}
+
+
+
 #pragma mark - Event Handling
 
 - (void) cancelPressed:(UIBarButtonItem *)sender {
     [self.delegate cameraViewController:self didCompleteWithImage:nil];
 }
 
-#pragma mark - Layout
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-    CGFloat width = CGRectGetWidth(self.view.bounds);
-    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 44);
-    
-    CGFloat yOriginOfBottomView = CGRectGetMaxY(self.topView.frame) + width;
-    CGFloat heightOfBottomView = CGRectGetHeight(self.view.frame) - yOriginOfBottomView;
-    self.bottomView.frame = CGRectMake(0, yOriginOfBottomView, width, heightOfBottomView);
-    
-    CGFloat thirdOfWidth = width / 3;
-    
-    for (int i = 0; i < 4; i++) {
-        UIView *horizontalLine = self.horizontalLines[i];
-        UIView *verticalLine = self.verticalLines[i];
-        
-        horizontalLine.frame = CGRectMake(0, (i * thirdOfWidth) + CGRectGetMaxY(self.topView.frame), width, 0.5);
-        
-        CGRect verticalFrame = CGRectMake(i * thirdOfWidth, CGRectGetMaxY(self.topView.frame), 0.5, width);
-        
-        if (i == 3) {
-            verticalFrame.origin.x -= 0.5;
-        }
-        
-        verticalLine.frame = verticalFrame;
-    }
-    
-    self.imagePreview.frame = self.view.bounds;
-    self.captureVideoPreviewLayer.frame = self.imagePreview.bounds;
-    
-    CGFloat cameraToolbarHeight = 100;
-    self.cameraToolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds) - cameraToolbarHeight, width, cameraToolbarHeight);
-}
 
 #pragma mark - CameraToolbarDelegate
 
