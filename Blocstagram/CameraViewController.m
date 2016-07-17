@@ -43,32 +43,27 @@
     [self createCancelButton];
 }
 
-#pragma mark - Layout
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-    CGFloat width = CGRectGetWidth(self.view.bounds);
-    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 44);
-    
-    CGFloat yOriginOfBottomView = CGRectGetMaxY(self.topView.frame) + width;
-    CGFloat heightOfBottomView = CGRectGetHeight(self.view.frame) - yOriginOfBottomView;
-    self.bottomView.frame = CGRectMake(0, yOriginOfBottomView, width, heightOfBottomView);
-    
-    self.cropBox.frame = CGRectMake(0, CGRectGetMaxY(self.topView.frame), width, width);
-    
-    self.imagePreview.frame = self.view.bounds;
-    self.captureVideoPreviewLayer.frame = self.imagePreview.bounds;
-    
-    CGFloat cameraToolbarHeight = 100;
-    self.cameraToolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds) - cameraToolbarHeight, width, cameraToolbarHeight);
+- (void) createViews {
+    self.imagePreview = [UIView new];
+    self.topView = [UIToolbar new];
+    self.bottomView = [UIToolbar new];
+    self.cameraToolbar = [[CameraToolbar alloc] initWithImageNames:@[@"rotate", @"road"]];
+    self.cameraToolbar.delegate = self;
+    UIColor *whiteBG = [UIColor colorWithWhite:1.0 alpha:.15];
+    self.topView.barTintColor = whiteBG;
+    self.bottomView.barTintColor = whiteBG;
+    self.cropBox = [CropBox new];
+    self.topView.alpha = 0.5;
+    self.bottomView.alpha = 0.5;
 }
 
-
-- (void) createCancelButton {
-    UIImage *cancelImage = [UIImage imageNamed:@"x"];
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:cancelImage style:UIBarButtonItemStyleDone target:self action:@selector(cancelPressed:)];
-    self.navigationItem.leftBarButtonItem = cancelButton;
+- (void) addViewsToViewHierarchy {
+    NSMutableArray *views = [@[self.imagePreview, self.cropBox, self.topView, self.bottomView] mutableCopy];
+    [views addObject:self.cameraToolbar];
+    
+    for (UIView *view in views) {
+        [self.view addSubview:view];
+    }
 }
 
 - (void) setupImageCapture {
@@ -79,7 +74,7 @@
     self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     self.captureVideoPreviewLayer.masksToBounds = YES;
     [self.imagePreview.layer addSublayer:self.captureVideoPreviewLayer];
-
+    
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (granted) {
@@ -119,36 +114,85 @@
     }];
 }
 
-
-- (void) addViewsToViewHierarchy {
-    NSMutableArray *views = [@[self.imagePreview, self.cropBox, self.topView, self.bottomView] mutableCopy];
-    [views addObject:self.cameraToolbar];
+- (void) cameraButtonPressedOnToolbar:(CameraToolbar *)toolbar {
+    AVCaptureConnection *videoConnection;
     
-    for (UIView *view in views) {
-        [self.view addSubview:view];
+    // Find the right connection object
+    for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
+        for (AVCaptureInputPort *port in connection.inputPorts) {
+            if ([port.mediaType isEqual:AVMediaTypeVideo]) {
+                videoConnection = connection;
+                break;
+            }
+        }
+        if (videoConnection) { break; }
     }
+    
+    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+        if (imageSampleBuffer) {
+            NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+            UIImage *image = [UIImage imageWithData:imageData scale:[UIScreen mainScreen].scale];
+            
+            image = [image imageWithFixedOrientation];
+            image = [image imageResizedToMatchAspectRatioOfSize:self.captureVideoPreviewLayer.bounds.size];
+            
+            CGRect gridRect = self.cropBox.frame;
+            
+            CGRect cropRect = gridRect;
+            cropRect.origin.x = (CGRectGetMinX(gridRect) + (image.size.width - CGRectGetWidth(gridRect)) / 2);
+            
+            image = [image imageCroppedToRect:cropRect];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate cameraViewController:self didCompleteWithImage:image];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:error.localizedDescription message:error.localizedRecoverySuggestion preferredStyle:UIAlertControllerStyleAlert];
+                [alertVC addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"OK button") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                    [self.delegate cameraViewController:self didCompleteWithImage:nil];
+                }]];
+                
+                [self presentViewController:alertVC animated:YES completion:nil];
+            });
+            
+        }
+    }];
 }
 
-- (void) createViews {
-    self.imagePreview = [UIView new];
-    self.topView = [UIToolbar new];
-    self.bottomView = [UIToolbar new];
-    self.cameraToolbar = [[CameraToolbar alloc] initWithImageNames:@[@"rotate", @"road"]];
-    self.cameraToolbar.delegate = self;
-    UIColor *whiteBG = [UIColor colorWithWhite:1.0 alpha:.15];
-    self.topView.barTintColor = whiteBG;
-    self.bottomView.barTintColor = whiteBG;
-    self.cropBox = [CropBox new];
-    self.topView.alpha = 0.5;
-    self.bottomView.alpha = 0.5;
+- (void) createCancelButton {
+    UIImage *cancelImage = [UIImage imageNamed:@"x"];
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:cancelImage style:UIBarButtonItemStyleDone target:self action:@selector(cancelPressed:)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
 }
-
-
 
 #pragma mark - Event Handling
 
 - (void) cancelPressed:(UIBarButtonItem *)sender {
     [self.delegate cameraViewController:self didCompleteWithImage:nil];
+}
+
+
+
+#pragma mark - Layout
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    self.topView.frame = CGRectMake(0, self.topLayoutGuide.length, width, 44);
+    
+    CGFloat yOriginOfBottomView = CGRectGetMaxY(self.topView.frame) + width;
+    CGFloat heightOfBottomView = CGRectGetHeight(self.view.frame) - yOriginOfBottomView;
+    self.bottomView.frame = CGRectMake(0, yOriginOfBottomView, width, heightOfBottomView);
+    
+    self.cropBox.frame = CGRectMake(0, CGRectGetMaxY(self.topView.frame), width, width);
+    
+    self.imagePreview.frame = self.view.bounds;
+    self.captureVideoPreviewLayer.frame = self.imagePreview.bounds;
+    
+    CGFloat cameraToolbarHeight = 100;
+    self.cameraToolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds) - cameraToolbarHeight, width, cameraToolbarHeight);
 }
 
 
@@ -196,51 +240,7 @@
 }
 
 
-- (void) cameraButtonPressedOnToolbar:(CameraToolbar *)toolbar {
-    AVCaptureConnection *videoConnection;
-    
-    // Find the right connection object
-    for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
-        for (AVCaptureInputPort *port in connection.inputPorts) {
-            if ([port.mediaType isEqual:AVMediaTypeVideo]) {
-                videoConnection = connection;
-                break;
-            }
-        }
-        if (videoConnection) { break; }
-    }
-    
-    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-        if (imageSampleBuffer) {
-            NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-            UIImage *image = [UIImage imageWithData:imageData scale:[UIScreen mainScreen].scale];
-            
-            image = [image imageWithFixedOrientation];
-            image = [image imageResizedToMatchAspectRatioOfSize:self.captureVideoPreviewLayer.bounds.size];
-            
-            CGRect gridRect = self.cropBox.frame;
-            
-            CGRect cropRect = gridRect;
-            cropRect.origin.x = (CGRectGetMinX(gridRect) + (image.size.width - CGRectGetWidth(gridRect)) / 2);
-            
-            image = [image imageCroppedToRect:cropRect];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.delegate cameraViewController:self didCompleteWithImage:image];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:error.localizedDescription message:error.localizedRecoverySuggestion preferredStyle:UIAlertControllerStyleAlert];
-                [alertVC addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"OK button") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                    [self.delegate cameraViewController:self didCompleteWithImage:nil];
-                }]];
-                
-                [self presentViewController:alertVC animated:YES completion:nil];
-            });
-            
-        }
-    }];
-}
+
 
 #pragma mark - ImageLibraryViewControllerDelegate
 
