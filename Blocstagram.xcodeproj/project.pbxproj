@@ -34,6 +34,7 @@
 		AA9D84D81D33E8B100AD6F92 /* MediaFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D84D71D33E8B100AD6F92 /* MediaFullScreenViewController.m */; };
 		AAF2DF731D37EB2E00E64E1B /* CircleSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF2DF721D37EB2E00E64E1B /* CircleSpinnerView.m */; };
 		AAF2DF761D37F2DE00E64E1B /* LikeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF2DF751D37F2DE00E64E1B /* LikeButton.m */; };
+		AAF2DF791D3930D500E64E1B /* ComposeCommentView.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF2DF781D3930D500E64E1B /* ComposeCommentView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +100,8 @@
 		AAF2DF721D37EB2E00E64E1B /* CircleSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleSpinnerView.m; sourceTree = "<group>"; };
 		AAF2DF741D37F2DE00E64E1B /* LikeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeButton.h; sourceTree = "<group>"; };
 		AAF2DF751D37F2DE00E64E1B /* LikeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeButton.m; sourceTree = "<group>"; };
+		AAF2DF771D3930D500E64E1B /* ComposeCommentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeCommentView.h; sourceTree = "<group>"; };
+		AAF2DF781D3930D500E64E1B /* ComposeCommentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeCommentView.m; sourceTree = "<group>"; };
 		F847A22DC3233BB7265D5A3D /* Pods-Blocstagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blocstagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Blocstagram/Pods-Blocstagram.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -177,6 +180,8 @@
 				AAF2DF721D37EB2E00E64E1B /* CircleSpinnerView.m */,
 				AAF2DF741D37F2DE00E64E1B /* LikeButton.h */,
 				AAF2DF751D37F2DE00E64E1B /* LikeButton.m */,
+				AAF2DF771D3930D500E64E1B /* ComposeCommentView.h */,
+				AAF2DF781D3930D500E64E1B /* ComposeCommentView.m */,
 				AA678DDC1D1826C600573788 /* Media.h */,
 				AA678DDD1D1826C600573788 /* Media.m */,
 				AA678DDF1D1827D600573788 /* Comment.h */,
@@ -444,6 +449,7 @@
 				AA678DED1D1F1C4600573788 /* LoginViewController.m in Sources */,
 				AAF2DF761D37F2DE00E64E1B /* LikeButton.m in Sources */,
 				AA678DE41D1828AD00573788 /* DataSource.m in Sources */,
+				AAF2DF791D3930D500E64E1B /* ComposeCommentView.m in Sources */,
 				AA678D901D11C3EE00573788 /* main.m in Sources */,
 				AA678DD81D11C7F700573788 /* ImagesTableViewController.m in Sources */,
 			);
