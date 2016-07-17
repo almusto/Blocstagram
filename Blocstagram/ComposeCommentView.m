@@ -16,6 +16,7 @@
 
 @end
 
+
 @implementation ComposeCommentView
 
 
@@ -94,9 +95,14 @@
     _isWritingComment = isWritingComment;
     
     if (animated) {
-        [UIView animateWithDuration:0.2 animations:^{
-            [self layoutSubviews];
-        }];
+        [UIView animateWithDuration:2.0
+                              delay:0
+             usingSpringWithDamping:0.3
+              initialSpringVelocity:0.3
+                            options:0
+                         animations:^ {
+             [self layoutSubviews];
+         } completion:nil];
     } else {
         [self layoutSubviews];
     }
