@@ -334,6 +334,38 @@
             [self addCIImageToCollectionView:composite.outputImage withFilterTitle:NSLocalizedString(@"Film", @"Film Filter")];
         }
     }];
+    
+    
+    // Invert filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *invertFilter = [CIFilter filterWithName:@"CIColorInvert"];
+        
+        if (invertFilter) {
+            [invertFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            [self addCIImageToCollectionView:invertFilter.outputImage withFilterTitle:NSLocalizedString(@"Invert", @"Invert Filter")];
+        }
+    }];
+    
+    // Moody inverted filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *moodyFilter = [CIFilter filterWithName:@"CISRGBToneCurveToLinear"];
+        CIFilter *invertFilter = [CIFilter filterWithName:@"CIColorInvert"];
+        
+        if (moodyFilter) {
+            [moodyFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            
+            CIImage *result = moodyFilter.outputImage;
+            
+            if (invertFilter) {
+                [invertFilter setValue:result forKeyPath:kCIInputImageKey];
+                result = invertFilter.outputImage;
+            }
+            
+            [self addCIImageToCollectionView:result withFilterTitle:NSLocalizedString(@"Invert Moody", @"Invert Moody Filter")];
+        }
+    }];
 }
 
 - (void) sendButtonPressed:(id)sender {
