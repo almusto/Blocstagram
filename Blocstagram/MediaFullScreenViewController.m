@@ -13,6 +13,9 @@
 
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
+@property (nonatomic, strong) UITapGestureRecognizer *outsideTap;
+
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 
@@ -38,6 +41,7 @@
     
     [self.view addSubview:self.scrollView];
     
+    
     self.imageView = [UIImageView new];
     self.imageView.image = self.media.image;
     
@@ -51,9 +55,9 @@
     
     [self.tap requireGestureRecognizerToFail:self.doubleTap];
     
+    
     [self.scrollView addGestureRecognizer:self.tap];
     [self.scrollView addGestureRecognizer:self.doubleTap];
-    
 }
 
 - (void) viewWillLayoutSubviews {
@@ -143,6 +147,51 @@
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
                                                    
         }
+}
+
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (!self.outsideTap) {
+        self.outsideTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapOutsideFired:)];
+        self.outsideTap.numberOfTapsRequired = 1;
+        self.outsideTap.cancelsTouchesInView = NO;
+        self.outsideTap.delegate = self;
+        [self.view.window addGestureRecognizer:self.outsideTap];
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if (self.outsideTap) {
+        [self.view.window removeGestureRecognizer:self.outsideTap];
+        self.outsideTap = nil;
+    }
+}
+
+
+- (void)tapOutsideFired:(UITapGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        CGPoint location = [sender locationInView:nil]; //Passing nil gives us coordinates in the window
+        
+        //Then we convert the tap's location into the local view's coordinate system, and test to see if it's in or outside. If outside, dismiss the view.
+        
+        if (![self.view pointInside:[self.view convertPoint:location fromView:self.view.window] withEvent:nil])
+        {
+            // Remove the recognizer first so it's view.window is valid.
+            [self.view.window removeGestureRecognizer:sender];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
 }
 
 @end
